@@ -24,7 +24,8 @@ while line =  h_files['IN'].gets
   line.chomp! unless line==nil
   a_word = line.split("\"\,\"")
 
-	next if a_word[0]=="\"0" # don't calculate
+	next if a_word[0]=="\"0"    # don't calculate
+	next if a_word[3].to_i > 0  # income
 
 	output = []
 	for i in 1..7 ; output << a_word[i] ; end
@@ -41,11 +42,14 @@ while line =  h_files['IN'].gets
   end
 
   # Rules for Expenses
-	major = a_word[5].encode("UTF-8") ; minor = a_word[6]
+	major = a_word[5].encode("UTF-8") ; minor = a_word[6].encode("UTF-8")
+	content = a_word[2].encode("UTF-8")
 
   if minor[0] != "["
 		output += [0.0,0.0,0.0,0.0] ; output[7] << "unknown_category;"
 	elsif major == "通信費" ; output += [0.25, 0.0, 0.5, 0.25]
+	elsif content == "FeBe"; output += [0.0, 0.0, 1.0, 0.0]
+	elsif content =~ /ブリアン/ ; output += [0.0, 0.0, 1.0, 0.0]
 	elsif minor =~ /NT\]$/ ; output += [0.25, 0.0, 0.5, 0.25]
 	elsif minor =~ /MY\]$/ ; output += [0.0, 0.0, 1.0, 0.0]
   elsif minor =~ /MW\]$/ ; output += [0.0, 0.5, 0.0, 0.5]
