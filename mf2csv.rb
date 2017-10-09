@@ -17,7 +17,7 @@ h_files = {
 
 # line 1
 line =  h_files['IN'].gets
-h_files['OUT'].puts "date,content,amount,account,major_category,minor_category,memo,check,HT,M,Y,W,HT,M,Y,W"
+h_files['OUT'].puts "date,content,amount,account,major_category,minor_category,memo,check,HT,M,Y,W,HT,M,Y,W,C"
 
 while line =  h_files['IN'].gets
 
@@ -46,19 +46,20 @@ while line =  h_files['IN'].gets
 	content = a_word[2].encode("UTF-8")
 
   if minor[0] != "["
-		output += [0.0,0.0,0.0,0.0] ; output[7] << "unknown_category;"
-	elsif major == "通信費" ; output += [0.25, 0.0, 0.5, 0.25]
-	elsif content == "FeBe"; output += [0.0, 0.0, 1.0, 0.0]
-	elsif content =~ /ブリアン/ ; output += [0.0, 0.0, 1.0, 0.0]
-	elsif minor =~ /NT\]$/ ; output += [0.25, 0.0, 0.5, 0.25]
-	elsif minor =~ /MY\]$/ ; output += [0.0, 0.0, 1.0, 0.0]
-  elsif minor =~ /MW\]$/ ; output += [0.0, 0.5, 0.0, 0.5]
-	elsif minor =~ /HT\]$/ ; output += [1.0, 0.0, 0.0, 0.0]
-	elsif minor =~ /M\]$/  ; output += [0.0, 1.0, 0.0, 0.0]
-	elsif minor =~ /Y\]$/  ; output += [0.0, 0.0, 1.0, 0.0]
-	elsif minor =~ /W\]$/  ; output += [0.0, 0.0, 0.0, 1.0]
+		output += [0.0,0.0,0.0,0.0,0.0] ; output[7] << "unknown_category;"
+	elsif major == "通信費" ; output += [0.25, 0.0, 0.5, 0.25, 0.0]
+	elsif content == "FeBe"; output += [0.0, 0.0, 1.0, 0.0, 0.0]
+	elsif content =~ /ブリアン/ ; output += [0.0, 0.0, 1.0, 0.0, 0.0]
+	elsif minor =~ /NT\]$/ ; output += [0.25, 0.0, 0.5, 0.25, 0.0]
+	elsif minor =~ /MY\]$/ ; output += [0.0, 0.0, 1.0, 0.0, 0.0]
+  elsif minor =~ /MW\]$/ ; output += [0.0, 0.5, 0.0, 0.5, 0.0]
+	elsif minor =~ /HT\]$/ ; output += [1.0, 0.0, 0.0, 0.0, 0.0]
+	elsif minor =~ /M\]$/  ; output += [0.0, 1.0, 0.0, 0.0, 0.0]
+	elsif minor =~ /Y\]$/  ; output += [0.0, 0.0, 1.0, 0.0, 0.0]
+	elsif minor =~ /W\]$/  ; output += [0.0, 0.0, 0.0, 1.0, 0.0]
+	elsif minor =~ /C\]$/ ; output += [0.0, 0.0, 0.0, 0.0, 1.0]
 	else
-		output += [0.0,0.0,0.0,0.0] ; output[7] << "need to input;"
+		output += [0.0,0.0,0.0,0.0,0.0] ; output[7] << "need to input;"
   end
 
 	output.each { |a| ; h_files['OUT'].print "\"#{a}\"," }
