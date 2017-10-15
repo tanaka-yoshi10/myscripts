@@ -24,7 +24,7 @@ h_files['OUT'].puts "date,content,amount,account,major_category,minor_category,m
 csv_data.each do |a_row|
 
 	next if a_row["id"]=="ID"       # line 1
-	next if a_row["calobj"]=="\"0"  # don't calculate
+	next if a_row["calobj"]=="0"  # don't calculate
 	next if a_row["fee"].to_i > 0   # income
 
 	output = []
