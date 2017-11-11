@@ -17,14 +17,14 @@ File.open(outfilename, 'w' ) do |out_file|
   out_file.puts 'date,content,amount,account,major_category,minor_category,memo,check,HT,M,Y,W,HT,M,Y,W'
   CSV.foreach(infilename, headers: :first_row, encoding: 'Shift_JIS:UTF-8') do |a_word|
     next if a_word['計算対象'] == '0'
-    next if a_word[3].to_i > 0  # income
+    next if a_word['金額（円）'].to_i > 0
 
     output = []
     for i in 1..7 ; output << a_word[i] ; end
     output << '' # output[7] for check
 
     # Rules for Investiment
-    case a_word[4] # account
+    case a_word['保有金融機関']
       when /^ht_/ ; output += [1.0, 0.0, 0.0, 0.0]
       when /^m_/  ; output += [0.0, 1.0, 0.0, 0.0]
       when /^y_/  ; output += [0.0, 0.0, 1.0, 0.0]
@@ -34,8 +34,9 @@ File.open(outfilename, 'w' ) do |out_file|
     end
 
     # Rules for Expenses
-    major = a_word[5].encode('UTF-8') ; minor = a_word[6].encode('UTF-8')
-    content = a_word[2].encode('UTF-8')
+    major = a_word['大項目'].encode('UTF-8')
+    minor = a_word['中項目'].encode('UTF-8')
+    content = a_word['内容'].encode('UTF-8')
 
     if minor[0] != '['
       output += [0.0,0.0,0.0,0.0] ; output[7] << 'unknown_category;'
