@@ -14,7 +14,7 @@ exit unless FileTest.exist?( infilename )
 outfilename = File.expand_path("../#{File.basename(infilename, '.*')}_rslt.csv", infilename)
 
 File.open(outfilename, 'w' ) do |out_file|
-  out_file.puts 'date,content,amount,account,major_category,minor_category,memo,check,HT,M,Y,W,HT,M,Y,W'
+  out_file.puts 'date,content,amount,account,major_category,minor_category,memo,check,HT,M,Y,W,HT,M,Y,W,C'
   CSV.foreach(infilename, headers: :first_row, encoding: 'Shift_JIS:UTF-8') do |input_row|
     next if input_row['計算対象'] == '0'
     next if input_row['金額（円）'].to_i > 0 # 収入は見ない
@@ -43,30 +43,32 @@ File.open(outfilename, 'w' ) do |out_file|
     content = input_row['内容'].encode('UTF-8')
 
     if minor[0] != '[' # MoneyForwardで自動で振り分けられた場合
-      output += [0.0,0.0,0.0,0.0]
+      output += [0.0,0.0,0.0,0.0,0.0]
       output[7] << 'unknown_category;'
     elsif major == '通信費'
-      output += [0.25, 0.0, 0.5, 0.25]
+      output += [0.25, 0.0, 0.5, 0.25, 0.0]
     elsif content == 'FeBe'
-      output += [0.0, 0.0, 1.0, 0.0]
+      output += [0.0, 0.0, 1.0, 0.0, 0.0]
     elsif content =~ /ブリアン/
-      output += [0.0, 0.0, 1.0, 0.0]
+      output += [0.0, 0.0, 1.0, 0.0, 0.0]
     elsif minor =~ /NT\]$/
-      output += [0.25, 0.0, 0.5, 0.25]
+      output += [0.25, 0.0, 0.5, 0.25, 0.0]
     elsif minor =~ /MY\]$/
-      output += [0.0, 0.0, 1.0, 0.0]
+      output += [0.0, 0.0, 1.0, 0.0, 0.0]
     elsif minor =~ /MW\]$/
-      output += [0.0, 0.5, 0.0, 0.5]
+      output += [0.0, 0.5, 0.0, 0.5, 0.0]
     elsif minor =~ /HT\]$/
-      output += [1.0, 0.0, 0.0, 0.0]
+      output += [1.0, 0.0, 0.0, 0.0, 0.0]
     elsif minor =~ /M\]$/
-      output += [0.0, 1.0, 0.0, 0.0]
+      output += [0.0, 1.0, 0.0, 0.0, 0.0]
     elsif minor =~ /Y\]$/
-      output += [0.0, 0.0, 1.0, 0.0]
+      output += [0.0, 0.0, 1.0, 0.0, 0.0]
     elsif minor =~ /W\]$/
-      output += [0.0, 0.0, 0.0, 1.0]
+      output += [0.0, 0.0, 0.0, 1.0, 0.0]
+    elsif minor =~ /C\]$/
+      output += [0.0, 0.0, 0.0, 0.0, 1.0]
     else
-      output += [0.0,0.0,0.0,0.0]
+      output += [0.0,0.0,0.0,0.0,0.0]
       output[7] << 'need to input;'
     end
 
