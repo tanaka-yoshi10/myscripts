@@ -14,7 +14,7 @@ File.open(infilename, 'r' ) do |in_file|
   File.open(outfilename, 'w' ) do |out_file|
     # line 1
     line =  in_file.gets
-    out_file.puts "date,content,amount,account,major_category,minor_category,memo,check,HT,M,Y,W,HT,M,Y,W"
+    out_file.puts 'date,content,amount,account,major_category,minor_category,memo,check,HT,M,Y,W,HT,M,Y,W'
 
     while line =  in_file.gets
       line.chomp! unless line==nil
@@ -25,7 +25,7 @@ File.open(infilename, 'r' ) do |in_file|
 
       output = []
       for i in 1..7 ; output << a_word[i] ; end
-      output << "" # output[7] for check
+      output << '' # output[7] for check
 
       # Rules for Investiment
       case a_word[4] # account
@@ -34,17 +34,17 @@ File.open(infilename, 'r' ) do |in_file|
         when /^y_/  ; output += [0.0, 0.0, 1.0, 0.0]
         when /^w_/  ; output += [0.0, 0.0, 0.0, 1.0]
         else
-          output += [0.0,0.0,0.0,0.0] ; output[7] << "unknown_account;"
+          output += [0.0,0.0,0.0,0.0] ; output[7] << 'unknown_account;'
       end
 
       # Rules for Expenses
-      major = a_word[5].encode("UTF-8") ; minor = a_word[6].encode("UTF-8")
-      content = a_word[2].encode("UTF-8")
+      major = a_word[5].encode('UTF-8') ; minor = a_word[6].encode('UTF-8')
+      content = a_word[2].encode('UTF-8')
 
-      if minor[0] != "["
-        output += [0.0,0.0,0.0,0.0] ; output[7] << "unknown_category;"
-      elsif major == "通信費" ; output += [0.25, 0.0, 0.5, 0.25]
-      elsif content == "FeBe"; output += [0.0, 0.0, 1.0, 0.0]
+      if minor[0] != '['
+        output += [0.0,0.0,0.0,0.0] ; output[7] << 'unknown_category;'
+      elsif major == '通信費' ; output += [0.25, 0.0, 0.5, 0.25]
+      elsif content == 'FeBe'; output += [0.0, 0.0, 1.0, 0.0]
       elsif content =~ /ブリアン/ ; output += [0.0, 0.0, 1.0, 0.0]
       elsif minor =~ /NT\]$/ ; output += [0.25, 0.0, 0.5, 0.25]
       elsif minor =~ /MY\]$/ ; output += [0.0, 0.0, 1.0, 0.0]
@@ -54,10 +54,10 @@ File.open(infilename, 'r' ) do |in_file|
       elsif minor =~ /Y\]$/  ; output += [0.0, 0.0, 1.0, 0.0]
       elsif minor =~ /W\]$/  ; output += [0.0, 0.0, 0.0, 1.0]
       else
-        output += [0.0,0.0,0.0,0.0] ; output[7] << "need to input;"
+        output += [0.0,0.0,0.0,0.0] ; output[7] << 'need to input;'
       end
 
-      output.each { |a| ; out_file.print "\"#{a}\"," }
+      output.each { |a| out_file.print "\"#{a}\"," }
       out_file.puts
     end
   end
