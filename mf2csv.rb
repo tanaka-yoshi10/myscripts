@@ -8,7 +8,7 @@ end
 usage if ARGV.size < 1
 infilename = ARGV[0]
 exit unless FileTest.exist?( infilename )
-outfilename = File.dirname(infilename) + "\\" + File.basename(infilename, ".*") + "_rslt.csv"
+outfilename = File.expand_path("../#{File.basename(infilename, '.*')}_rslt.csv", infilename)
 h_files = {
   'IN'  => open(  infilename, "r" ),
   'OUT' => open( outfilename, "w" )
