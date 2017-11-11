@@ -7,13 +7,13 @@ def usage
 end
 
 # Main process
-usage if ARGV.size < 1
+usage if ARGV.empty?
 infilename = ARGV[0]
-exit unless FileTest.exist?( infilename )
+exit unless FileTest.exist?(infilename)
 
 outfilename = File.expand_path("../#{File.basename(infilename, '.*')}_rslt.csv", infilename)
 
-File.open(outfilename, 'w' ) do |out_file|
+File.open(outfilename, 'w') do |out_file|
   out_file.puts 'date,content,amount,account,major_category,minor_category,memo,check,HT,M,Y,W,HT,M,Y,W,C'
   CSV.foreach(infilename, headers: :first_row, encoding: 'Shift_JIS:UTF-8') do |input_row|
     next if input_row['計算対象'] == '0'
@@ -24,17 +24,17 @@ File.open(outfilename, 'w' ) do |out_file|
 
     # Rules for Investiment
     case input_row['保有金融機関']
-      when /^ht_/
-        output += [1.0, 0.0, 0.0, 0.0]
-      when /^m_/
-        output += [0.0, 1.0, 0.0, 0.0]
-      when /^y_/
-        output += [0.0, 0.0, 1.0, 0.0]
-      when /^w_/
-        output += [0.0, 0.0, 0.0, 1.0]
-      else
-        output += [0.0,0.0,0.0,0.0]
-        output[7] << 'unknown_account;'
+    when /^ht_/
+      output += [1.0, 0.0, 0.0, 0.0]
+    when /^m_/
+      output += [0.0, 1.0, 0.0, 0.0]
+    when /^y_/
+      output += [0.0, 0.0, 1.0, 0.0]
+    when /^w_/
+      output += [0.0, 0.0, 0.0, 1.0]
+    else
+      output += [0.0, 0.0, 0.0, 0.0]
+      output[7] << 'unknown_account;'
     end
 
     # Rules for Expenses
@@ -43,7 +43,7 @@ File.open(outfilename, 'w' ) do |out_file|
     content = input_row['内容'].encode('UTF-8')
 
     if minor[0] != '[' # MoneyForwardで自動で振り分けられた場合
-      output += [0.0,0.0,0.0,0.0,0.0]
+      output += [0.0, 0.0, 0.0, 0.0, 0.0]
       output[7] << 'unknown_category;'
     elsif major == '通信費'
       output += [0.25, 0.0, 0.5, 0.25, 0.0]
@@ -68,10 +68,10 @@ File.open(outfilename, 'w' ) do |out_file|
     elsif minor =~ /C\]$/
       output += [0.0, 0.0, 0.0, 0.0, 1.0]
     else
-      output += [0.0,0.0,0.0,0.0,0.0]
+      output += [0.0, 0.0, 0.0, 0.0, 0.0]
       output[7] << 'need to input;'
     end
 
-    out_file.puts output.map { |e| %Q!"#{e}"! }.join(',')
+    out_file.puts output.map { |e| %("#{e}") }.join(',')
   end
 end
