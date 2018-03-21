@@ -15,7 +15,7 @@ outfilename = File.expand_path("../#{File.basename(infilename, '.*')}_rslt.csv",
 
 File.open(outfilename, 'w') do |out_file|
   out_file.puts 'date,content,amount,account,major_category,minor_category,memo,check,HT,M,Y,W,HT,M,Y,W,C'
-  CSV.foreach(infilename, headers: :first_row, encoding: 'Shift_JIS:UTF-8') do |input_row|
+  CSV.foreach(infilename, headers: :first_row, encoding: 'CP932:UTF-8') do |input_row|
     next if input_row['計算対象'] == '0'
     next if input_row['金額（円）'].to_i > 0 # 収入は見ない
 
